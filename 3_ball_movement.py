@@ -55,7 +55,7 @@ weapons = []
 weapon_speed = 10
 
 # balloon (4개 크기에 대해 따로 처리)
-ball_imagaes = [
+ball_images = [
     pygame.image.load(os.path.join(image_path, "balloon1.png")),
     pygame.image.load(os.path.join(image_path, "balloon2.png")),
     pygame.image.load(os.path.join(image_path, "balloon3.png")),
@@ -70,12 +70,13 @@ balls = []
 # 최초 발생하는 큰 공 추가
 balls.append({
     "pos_x": 50,  # 공의 x 좌표
-    "pox_y": 50,  # y좌표
-    "img_idx": 0,  # 제일 큰 공
-    "to_x": 3,  # 공의 x축 이동방햐, -3이면 왼쪽으로 3이면 오른쪽으로 이동
-    "to_y": -6,  # y축 이동방향,
-    "init_spe_y": ball_speed_y[0]  # y 최초 속도
-})
+    "pos_y": 50,  # y좌표
+    "img_idx": 0,  # 제일 큰 공(이미지 중에서 0번째 공 사용)
+    "to_x": 3,  # 공의 x축 이동방향, -3이면 왼쪽으로 3이면 오른쪽으로 이동
+    "to_y": -6,  # y축 이동방향
+    "init_spe_y": ball_speed_y[0]  # y 최초 속도 (init_speed_y)
+})  # {} 딕셔너리 형태로 키값 : 밸류로 저장
+
 
 running = True
 while running:
@@ -123,13 +124,48 @@ while running:
     # if문처럼 y 좌표가 0보다 크다, 즉 천장에 닿지 않았을 경우에만 보이고 그렇지 않다면 화면에서 사라짐
     weapons = [[w[0], w[1]] for w in weapons if w[1] > 0]
 
-    # 4. 충돌 처리
+    # 공 위치 정의
+    for ball_idx, ball_val in enumerate(balls):
+        # balls 리스트에서 가져와서 하나씩 index값이랑 value를 출력해주는 역할 : enumerate(balls)
+        ball_pos_x = ball_val["pos_x"]
+        ball_pos_y = ball_val["pos_y"]
+        ball_img_idx = ball_val["img_idx"]
 
-    # 5. 화면 그리기
+        ball_size = ball_images[ball_img_idx].get_rect().size
+        ball_width = ball_size[0]
+        ball_height = ball_size[1]
+
+        # 가로벽에 닿았을 때 공 이동 위치를 반대 방향으로 변경해주는 역할 (튕겨져 나오는 효과)
+        if ball_pos_x <= 0 or ball_pos_x > screen_width - ball_width:
+            ball_val["to_x"] = ball_val["to_x"] * -1
+
+        # 세로 위치 : 스테이지에 튕겨서 올라가는 처리
+        if ball_pos_y >= screen_height - stage_height - ball_height:
+            ball_val["to_y"] = ball_val["init_spe_y"]
+        else:  # 그외에는 속도를 증가 -18, -17.5, -17.0 .... 0, +0.5, +1....
+            ball_val["to_y"] += 0.5
+
+        ball_val["pos_x"] += ball_val["to_x"]
+        ball_val["pos_y"] += ball_val["to_y"]
+
+        # It's too difficult now, what the heck!!!!!!
+        # salaveme chiquillos, super dificl python tambien T-T
+        # 살ㄹㅕ주세요 갑자기 어려워져서 내 머리 터지게 해요
+        #　むずかしすぎる！うちはプログラマー👩‍💻になれるのか？？？？？？？？？？
+
+        # 4. 충돌 처리
+
+        # 5. 화면 그리기
     screen.blit(background, (0, 0))
 
     for weapon_x_pos, weapon_y_pos in weapons:
         screen.blit(weapon, (weapon_x_pos, weapon_y_pos))
+
+    for idx, val in enumerate(balls):
+        ball_pos_x = val["pos_x"]
+        ball_pos_y = val["pos_y"]
+        ball_img_idx = val["img_idx"]
+        screen.blit(ball_images[ball_img_idx], (ball_pos_x, ball_pos_y))
 
     screen.blit(stage, (0, (screen_height - stage_height)))
     screen.blit(character, (character_x_pos, character_y_pos))
