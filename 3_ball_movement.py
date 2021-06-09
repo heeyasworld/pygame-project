@@ -74,7 +74,7 @@ balls.append({
     "img_idx": 0,  # 제일 큰 공(이미지 중에서 0번째 공 사용)
     "to_x": 3,  # 공의 x축 이동방향, -3이면 왼쪽으로 3이면 오른쪽으로 이동
     "to_y": -6,  # y축 이동방향
-    "init_spe_y": ball_speed_y[0]  # y 최초 속도 (init_speed_y)
+    "init_spd_y": ball_speed_y[0]  # y 최초 속도 (init_speed_y)
 })  # {} 딕셔너리 형태로 키값 : 밸류로 저장
 
 
@@ -141,7 +141,7 @@ while running:
 
         # 세로 위치 : 스테이지에 튕겨서 올라가는 처리
         if ball_pos_y >= screen_height - stage_height - ball_height:
-            ball_val["to_y"] = ball_val["init_spe_y"]
+            ball_val["to_y"] = ball_val["init_spd_y"]
         else:  # 그외에는 속도를 증가 -18, -17.5, -17.0 .... 0, +0.5, +1....
             ball_val["to_y"] += 0.5
 
